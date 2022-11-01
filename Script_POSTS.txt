@@ -1,0 +1,94 @@
+CREATE DATABASE posts WITH OWNER postgres;
+
+CREATE TABLE "users" (
+  "id" SERIAL PRIMARY KEY,
+  "name" varchar,
+  "email" varchar UNIQUE NOT NULL,
+  "age" varchar,
+  "is_author" boolean DEFAULT false
+);
+
+CREATE TABLE "categories" (
+  "id" SERIAL PRIMARY KEY,
+  "name" varchar UNIQUE NOT NULL
+);
+
+CREATE TABLE "posts" (
+  "id" SERIAL PRIMARY KEY,
+  "title" varchar NOT NULL,
+  "description" varchar NOT NULL,
+  "content" varchar NOT NULL,
+  "category_id" int NOT NULL,
+  "author_id" int NOT NULL,
+  "date" date
+);
+
+
+CREATE TABLE "comments" (
+  "id" SERIAL PRIMARY KEY,
+  "comment" varchar NOT NULL,
+  "comment_date" timestamp DEFAULT 'now()',
+  "post_id" int NOT NULL,
+  "user_id" int NOT NULL
+);
+
+ALTER TABLE "comments" ADD FOREIGN KEY ("post_id") REFERENCES "posts" ("id");
+ALTER TABLE "comments" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ALTER TABLE "posts" ADD FOREIGN KEY ("author_id") REFERENCES "users" ("id");
+ALTER TABLE "posts" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id");
+
+SELECT * FROM users;
+
+INSERT INTO users (name, email, age) VALUES 
+('paola torres', 'paola@yahoo.com', 41),
+('carlos payares', 'carlos@gmail.com', 47);
+
+INSERT INTO users (name, email, age, is_author) VALUES 
+('sandra rojas', 'sandra@gmail.com', 26, true),
+('hector perez', 'hector@gmail.com', 32, true);
+
+SELECT * FROM users;
+
+SELECT * FROM categories;
+
+INSERT INTO categories (name) VALUES 
+('cocina'),
+('tecnologia');
+
+SELECT * FROM categories;
+
+SELECT * FROM posts;
+
+INSERT INTO posts ( title, description, content, category_id, author_id, "date") VALUES 
+( 'receta pavo relleno', 'Pruebe este delicioso pavo relleno en navidad',
+'1 Limpiar el pavo y retirarle las tripas.Pon el pavo debajo del grifo del agua para terminar de limpiar. Tira un chorro de vino blanco encima del pavo y déjalo en el frigorífico durante toda la noche.
+
+2 Precalienta el horno a 200 ºC (400 F), pon a calentar una cacerola o sartén grande con el aceite. Dora los ajos previamente picados.
+
+3 Una vez que el ajo esté dorado, añade la carne molida, cocínala hasta que esté bien frita. Luego, incorpora la pimienta, el tomate, las aceitunas, las alcaparras, las uvas pasas.
+
+4 Ahora, rellena el pavo navideño con la carne que acabas de preparar con todos los ingredientes y colócalo en una bandeja para hornear.
+
+5 Introduce el pavo relleno en el horno y hornéalo durante 6 horas. Deberás bañarlo con su propio jugo cada 20 minutos hasta completar las horas totales. Pasado el tiempo, retíralo del horno.',
+1, 4, '2021-12-20'),
+( '¿Qué es Node.js y para qué se utiliza?', '¿Quieres adentrarte en el mundo del servidor? Aprende todo sobre Node.js.',
+'¿Qué es Node.js?
+Se trata de un entorno de código abierto (open source) multiplataforma que ejecuta el código JavaScript fuera de un navegador. Este entorno de ejecución de JavaScript se orienta a eventos asíncronos (los eventos no dependen de que otros se hayan ejecutado previamente) y permite construir aplicaciones en red escalables, es decir, tiene la capacidad de realizar muchas conexiones de manera simultánea sin que tenga que leer el código línea a línea, ni abrir múltiples procesos.
+
+¿Qué puedo hacer con Node.js?
+Node.js fue creado por los desarrolladores originales de JavaScript con la idea de poder ejecutar este lenguaje fuera del entorno del navegador. Para ello utilizaron el motor V8 de Chrome. Este motor se ocupa de convertir el código JavaScript a código máquina en tiempo real (a lo que se llama JIT, o just-in-time), como corresponde a un lenguaje interpretado como JS (a diferencia de lo que ocurre con los lenguajes compilados que, como bien dice su nombre, deben ser compilados antes de poder ser ejecutados).', 
+2, 3, '2022-10-24');
+
+SELECT * FROM posts;
+
+SELECT * FROM comments;
+
+INSERT INTO comments (comment, post_id, user_id) VALUES 
+('Me encantó la receta, lo hice el fin de semana.', 1, 1),
+('Interesante!, no sabía eso sobre node.', 2, 1);
+
+INSERT INTO comments (comment, post_id, user_id) VALUES 
+('Se ver rico, lo intentaré hacer.', 1, 2),
+('Me gusta node.', 2, 2);
+
+SELECT * FROM comments;
